@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>EPIC FX</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --acc:#c724ff;--acc2:#7b2fff;
+  --text:#f0e6ff;--dim:rgba(240,230,255,0.5);
+  --r:12px;
+}
+html,body{height:100%;width:100%;overflow-x:hidden}
+body{
+  font-family:'Fredoka',sans-serif;
+  color:var(--text);
+  background:linear-gradient(160deg,#0d0015 0%,#1a003a 40%,#2a0060 70%,#0d0030 100%);
+  min-height:100vh;
+}
+.app{max-width:620px;margin:0 auto;padding:16px 14px 40px;display:flex;flex-direction:column;gap:14px}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:baseline;gap:2px}
+.logo-epic{font-size:1.9rem;font-weight:700;background:linear-gradient(90deg,#c724ff,#7b2fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px}
+.logo-fx{font-size:1.9rem;font-weight:700;color:#fff}
+.logo-dot{font-size:.55rem;color:var(--acc);margin-left:4px;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+.pill{font-size:.65rem;font-weight:600;letter-spacing:2px;padding:5px 13px;border-radius:50px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--dim);transition:all .3s}
+.pill.on{background:rgba(199,36,255,.2);border-color:var(--acc);color:var(--acc);box-shadow:0 0 12px rgba(199,36,255,.4)}
+
+/* BPM */
+.bpm-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:13px 16px;display:flex;align-items:center;gap:16px}
+.bpm-left{display:flex;flex-direction:column;align-items:center;min-width:58px}
+.bpm-lbl{font-size:.6rem;letter-spacing:3px;color:var(--dim)}
+.bpm-val{font-size:2.3rem;font-weight:700;color:var(--acc);line-height:1}
+.bpm-row{flex:1;display:flex;align-items:center;gap:8px}
+.bpm-btn{width:34px;height:34px;border-radius:50%;border:none;background:rgba(199,36,255,.2);color:var(--acc);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation;transition:transform .1s,background .15s}
+.bpm-btn:active{transform:scale(.88);background:rgba(199,36,255,.45)}
+input[type=range].bpm-sl{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(90deg,var(--acc2),var(--acc));outline:none;cursor:pointer}
+input[type=range].bpm-sl::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(199,36,255,.6)}
+
+/* SEQUENCER */
+.seq{display:flex;flex-direction:column;gap:7px;width:100%}
+.nums-row{display:flex;align-items:center;width:100%}
+.lbl-spacer{width:68px;flex-shrink:0}
+.nums{flex:1;display:grid;grid-template-columns:repeat(16,1fr);gap:3px;min-width:0}
+.nums span{text-align:center;font-size:.5rem;color:rgba(240,230,255,.35)}
+
+.track-row{display:flex;align-items:center;width:100%;gap:5px}
+.t-lbl{width:63px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:1px}
+.t-icon{font-size:1.1rem}
+.t-name{font-size:.55rem;font-weight:600;letter-spacing:1px;color:var(--dim);text-transform:uppercase}
+.pads{flex:1;display:grid;grid-template-columns:repeat(16,1fr);gap:3px;min-width:0}
+
+/* PADS */
+.pad{
+  width:100%;
+  aspect-ratio:1/1;
+  min-height:22px;
+  display:block;
+  border-radius:5px;
+  background:rgba(255,255,255,.09);
+  border:1.5px solid rgba(255,255,255,.16);
+  cursor:pointer;
+  padding:0;
+  transition:background .1s,box-shadow .1s,transform .08s;
+  touch-action:manipulation;
+}
+.pad:active{transform:scale(.82)}
+.pad.on-kick  {background:#ff4d6d;border-color:#ff4d6d;box-shadow:0 0 7px rgba(255,77,109,.7)}
+.pad.on-snare {background:#ffd166;border-color:#ffd166;box-shadow:0 0 7px rgba(255,209,102,.7)}
+.pad.on-hihat {background:#06d6a0;border-color:#06d6a0;box-shadow:0 0 7px rgba(6,214,160,.7)}
+.pad.on-bass  {background:#4cc9f0;border-color:#4cc9f0;box-shadow:0 0 7px rgba(76,201,240,.7)}
+.pad.cur{filter:brightness(2);transform:scale(.86)}
+
+/* TRANSPORT */
+.transport{display:flex;gap:9px}
+.tbtn{flex:1;padding:13px 8px;border-radius:var(--r);border:none;font-family:'Fredoka',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:2px;cursor:pointer;touch-action:manipulation;transition:transform .1s}
+.tbtn:active{transform:scale(.94)}
+.t-play{background:linear-gradient(135deg,var(--acc2),var(--acc));color:#fff;box-shadow:0 4px 18px rgba(199,36,255,.4);flex:1.7;font-size:.95rem}
+.t-play.on{background:linear-gradient(135deg,#ff4d6d,#c724ff)}
+.t-clear{background:rgba(255,255,255,.07);color:var(--dim);border:1px solid rgba(255,255,255,.12)}
+.t-rand{background:rgba(76,201,240,.14);color:#4cc9f0;border:1px solid rgba(76,201,240,.28)}
+
+/* VOLUME */
+.vol-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:13px 15px;display:flex;flex-direction:column;gap:9px}
+.vol-row{display:flex;align-items:center;gap:9px}
+.v-lbl{width:44px;font-size:.7rem;font-weight:600;color:var(--dim)}
+input[type=range].v-sl{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.14);outline:none;cursor:pointer}
+input[type=range].v-sl::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--acc);box-shadow:0 0 5px rgba(199,36,255,.5)}
+.v-num{width:22px;font-size:.65rem;text-align:right;color:var(--dim)}
+
+@media(max-width:380px){
+  .t-lbl{width:48px}.lbl-spacer{width:54px}
+  .pad{min-height:18px}
+  .bpm-val{font-size:1.9rem}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="logo">
+      <span class="logo-epic">EPIC</span>
+      <span class="logo-fx">FX</span>
+      <span class="logo-dot">●</span>
+    </div>
+    <div class="pill" id="pill">STOPPED</div>
+  </header>
+
+  <!-- BPM -->
+  <div class="bpm-card">
+    <div class="bpm-left">
+      <span class="bpm-lbl">BPM</span>
+      <span class="bpm-val" id="bpmVal">120</span>
+    </div>
+    <div class="bpm-row">
+      <button class="bpm-btn" id="bpmDn">−</button>
+      <input type="range" class="bpm-sl" id="bpmSl" min="60" max="200" value="120"/>
+      <button class="bpm-btn" id="bpmUp">+</button>
+    </div>
+  </div>
+
+  <!-- SEQUENCER -->
+  <div class="seq">
+    <div class="nums-row">
+      <div class="lbl-spacer"></div>
+      <div class="nums" id="numRow"></div>
+    </div>
+    <div class="track-row">
+      <div class="t-lbl"><span class="t-icon">🥁</span><span class="t-name">Kick</span></div>
+      <div class="pads" id="pads-kick"></div>
+    </div>
+    <div class="track-row">
+      <div class="t-lbl"><span class="t-icon">🪘</span><span class="t-name">Snare</span></div>
+      <div class="pads" id="pads-snare"></div>
+    </div>
+    <div class="track-row">
+      <div class="t-lbl"><span class="t-icon">🎩</span><span class="t-name">Hi-Hat</span></div>
+      <div class="pads" id="pads-hihat"></div>
+    </div>
+    <div class="track-row">
+      <div class="t-lbl"><span class="t-icon">🎸</span><span class="t-name">Bass</span></div>
+      <div class="pads" id="pads-bass"></div>
+    </div>
+  </div>
+
+  <!-- TRANSPORT -->
+  <div class="transport">
+    <button class="tbtn t-clear" id="btnClear">CLEAR</button>
+    <button class="tbtn t-play"  id="btnPlay">▶ PLAY</button>
+    <button class="tbtn t-rand"  id="btnRand">RAND</button>
+  </div>
+
+  <!-- VOLUME -->
+  <div class="vol-box">
+    <div class="vol-row"><span class="v-lbl">Kick</span>  <input type="range" class="v-sl" min="0" max="1" step=".01" value=".9"  data-t="kick"/>  <span class="v-num">90</span></div>
+    <div class="vol-row"><span class="v-lbl">Snare</span> <input type="range" class="v-sl" min="0" max="1" step=".01" value=".8"  data-t="snare"/> <span class="v-num">80</span></div>
+    <div class="vol-row"><span class="v-lbl">Hi-Hat</span><input type="range" class="v-sl" min="0" max="1" step=".01" value=".7"  data-t="hihat"/> <span class="v-num">70</span></div>
+    <div class="vol-row"><span class="v-lbl">Bass</span>  <input type="range" class="v-sl" min="0" max="1" step=".01" value=".85" data-t="bass"/>  <span class="v-num">85</span></div>
+  </div>
+
+</div>
+<script>
+(function(){
+  const TRACKS=['kick','snare','hihat','bass'];
+  const STEPS=16;
+  let bpm=120, playing=false, step=0, timer=null, ctx=null;
+
+  const pattern={kick:new Array(STEPS).fill(false),snare:new Array(STEPS).fill(false),hihat:new Array(STEPS).fill(false),bass:new Array(STEPS).fill(false)};
+  const vol={kick:.9,snare:.8,hihat:.7,bass:.85};
+
+  // ── Audio ──
+  function ac(){
+    if(!ctx) ctx=new(window.AudioContext||window.webkitAudioContext)();
+    if(ctx.state==='suspended') ctx.resume();
+    return ctx;
+  }
+  function kick(v){
+    const c=ac(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime;
+    o.connect(g);g.connect(c.destination);o.type='sine';
+    o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(.001,t+.5);
+    g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+.5);
+    o.start(t);o.stop(t+.5);
+  }
+  function snare(v){
+    const c=ac(),t=c.currentTime;
+    const len=c.sampleRate*.12,buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    const ns=c.createBufferSource();ns.buffer=buf;
+    const ng=c.createGain();ns.connect(ng);ng.connect(c.destination);
+    ng.gain.setValueAtTime(v*.8,t);ng.gain.exponentialRampToValueAtTime(.001,t+.2);
+    ns.start(t);ns.stop(t+.2);
+    const o=c.createOscillator(),og=c.createGain();
+    o.connect(og);og.connect(c.destination);o.type='triangle';
+    o.frequency.setValueAtTime(180,t);og.gain.setValueAtTime(v*.4,t);og.gain.exponentialRampToValueAtTime(.001,t+.1);
+    o.start(t);o.stop(t+.1);
+  }
+  function hihat(v){
+    const c=ac(),t=c.currentTime;
+    const len=c.sampleRate*.07,buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<len;i++) d[i]=Math.random()*2-1;
+    const ns=c.createBufferSource();ns.buffer=buf;
+    const f=c.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+    const g=c.createGain();ns.connect(f);f.connect(g);g.connect(c.destination);
+    g.gain.setValueAtTime(v*.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.07);
+    ns.start(t);ns.stop(t+.07);
+  }
+  function bass(v){
+    const c=ac(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime;
+    o.connect(g);g.connect(c.destination);o.type='sawtooth';
+    o.frequency.setValueAtTime(55,t);o.frequency.exponentialRampToValueAtTime(40,t+.3);
+    g.gain.setValueAtTime(v*.6,t);g.gain.exponentialRampToValueAtTime(.001,t+.35);
+    o.start(t);o.stop(t+.35);
+  }
+  const play={kick,snare,hihat,bass};
+
+  // ── Build pads ──
+  function buildPads(){
+    // Step numbers
+    const nr=document.getElementById('numRow');
+    nr.innerHTML='';
+    for(let i=1;i<=STEPS;i++){const s=document.createElement('span');s.textContent=i;nr.appendChild(s);}
+
+    TRACKS.forEach(tr=>{
+      const box=document.getElementById('pads-'+tr);
+      box.innerHTML='';
+      for(let i=0;i<STEPS;i++){
+        const p=document.createElement('button');
+        p.className='pad';
+        p.dataset.t=tr;
+        p.dataset.i=i;
+        p.addEventListener('click',()=>{
+          pattern[tr][i]=!pattern[tr][i];
+          p.classList.toggle('on-'+tr, pattern[tr][i]);
+          if(pattern[tr][i]) play[tr](vol[tr]);
+        });
+        box.appendChild(p);
+      }
+    });
+  }
+
+  // ── Sequencer ──
+  function tick(){
+    document.querySelectorAll('.pad.cur').forEach(p=>p.classList.remove('cur'));
+    TRACKS.forEach(tr=>{
+      const pads=document.querySelectorAll('#pads-'+tr+' .pad');
+      if(pads[step]) pads[step].classList.add('cur');
+      if(pattern[tr][step]) play[tr](vol[tr]);
+    });
+    step=(step+1)%STEPS;
+  }
+  function start(){
+    ac();
+    clearInterval(timer);
+    step=0;
+    timer=setInterval(tick, (60/bpm/4)*1000);
+  }
+  function stop(){
+    clearInterval(timer);timer=null;step=0;
+    document.querySelectorAll('.pad.cur').forEach(p=>p.classList.remove('cur'));
+  }
+  function setBpm(v){
+    bpm=Math.max(60,Math.min(200,v));
+    document.getElementById('bpmVal').textContent=bpm;
+    document.getElementById('bpmSl').value=bpm;
+    if(playing) start();
+  }
+
+  // ── Controls ──
+  const btnPlay=document.getElementById('btnPlay');
+  const pill=document.getElementById('pill');
+
+  btnPlay.addEventListener('click',()=>{
+    playing=!playing;
+    if(playing){start();btnPlay.textContent='⏹ STOP';btnPlay.classList.add('on');pill.textContent='PLAYING';pill.classList.add('on');}
+    else{stop();btnPlay.textContent='▶ PLAY';btnPlay.classList.remove('on');pill.textContent='STOPPED';pill.classList.remove('on');}
+  });
+
+  document.getElementById('btnClear').addEventListener('click',()=>{
+    TRACKS.forEach(tr=>{
+      pattern[tr].fill(false);
+      document.querySelectorAll('#pads-'+tr+' .pad').forEach(p=>p.className='pad');
+    });
+  });
+
+  document.getElementById('btnRand').addEventListener('click',()=>{
+    TRACKS.forEach(tr=>{
+      const den=tr==='hihat'?.5:tr==='kick'?.3:.25;
+      for(let i=0;i<STEPS;i++) pattern[tr][i]=Math.random()<den;
+      document.querySelectorAll('#pads-'+tr+' .pad').forEach((p,i)=>{
+        p.className='pad'+(pattern[tr][i]?' on-'+tr:'');
+      });
+    });
+  });
+
+  document.getElementById('bpmSl').addEventListener('input',e=>setBpm(+e.target.value));
+  document.getElementById('bpmDn').addEventListener('click',()=>setBpm(bpm-1));
+  document.getElementById('bpmUp').addEventListener('click',()=>setBpm(bpm+1));
+
+  document.querySelectorAll('.v-sl').forEach(sl=>{
+    sl.addEventListener('input',e=>{
+      const tr=e.target.dataset.t;
+      vol[tr]=+e.target.value;
+      e.target.nextElementSibling.textContent=Math.round(vol[tr]*100);
+    });
+  });
+
+  // ── Init ──
+  buildPads();
+})();
+</script>
+</body>
+</html>
